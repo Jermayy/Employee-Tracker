@@ -28,4 +28,9 @@ dep_id INT NULL,
 PRIMARY KEY(id),
 FOREIGN KEY (dep_id) REFERENCES department(id)
 );
-----------------------------------------------------------------
+
+ALTER TABLE employee
+ADD FOREIGN KEY (role_id) REFERENCES role(id);
+
+
+SELECT * FROM department;
