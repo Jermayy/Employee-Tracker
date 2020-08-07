@@ -9,24 +9,23 @@ CREATE TABLE employee(
 id INT NOT NULL AUTO_INCREMENT,
 first_name VARCHAR(30) NULL,
 last_name VARCHAR(30) NULL,
-CONSTRAINT employee_pk PRIMARY KEY(id)
+role_id INT NULL,
+manager_id INT NULL,
+PRIMARY KEY(id)
 );
 
 CREATE TABLE department(
 id INT NOT NULL AUTO_INCREMENT,
-dep_name VARCHAR(30) NULL,
-CONSTRAINT department_pk PRIMARY KEY(id)
+name VARCHAR(30) NULL,
+PRIMARY KEY(id)
 );
 
 CREATE TABLE role(
 id INT NOT NULL AUTO_INCREMENT,
 title VARCHAR(30) NULL,
 salary DECIMAL NULL,
-CONSTRAINT role_pk PRIMARY KEY(id)
+dep_id INT NULL,
+PRIMARY KEY(id),
+FOREIGN KEY (dep_id) REFERENCES department(id)
 );
 ----------------------------------------------------------------
-ALTER TABLE role
-   ADD CONSTRAINT FK_department_role FOREIGN KEY (depID)
-      REFERENCES department (id)
-      ON DELETE CASCADE
-      ON UPDATE CASCADE;
