@@ -31,11 +31,11 @@ function init() {
             choices: [
                 "View All Employees",
                 "View All Employees By Deparment",
-                "View All Employees By Manager",
+                // "View All Employees By Manager",
                 "Add Employee",
                 "Remove Employee",
                 "Update Employee Role",
-                "Update Employee Manager"
+                // "Update Employee Manager"
             ]
         }).then(function(answer) {
             switch (answer.initChoice) {
@@ -83,9 +83,37 @@ function viewAllEmployees() {
 
         if (err) throw err;
 
-        console.log("Viewing all Employee's on the Database");
+        console.log("Viewing all Employees on the Database");
         console.table(res);
+
+        init();
+
+
     })
 }
 
+
+
 // -- Displays Employee's first name, last name, Role Title, salary and department --> must show manager name if applicable (bonus)
+
+
+
+function viewAllEmployeesByDep() {
+
+    const query =
+        "SELECT department.name AS Department_Name, employee.first_name AS First_Name, employee.last_name AS Last_Name, role.title AS Role_Title, role.salary AS Salary FROM((role INNER JOIN employee ON role.id = employee.role_id)INNER JOIN department ON role.dep_id = department.id) ORDER BY Department_Name;";
+
+    console.log(query);
+
+    connection.query(query, function(err, res) {
+
+        if (err) throw err;
+
+        console.log("Viewing all Employees on the Database");
+        console.table(res);
+
+        init();
+
+
+    })
+}
