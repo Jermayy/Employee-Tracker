@@ -221,7 +221,7 @@ function addEmployee() {
 
 function removeEmployee() {
     inquirer.prompt([{
-        type: "number",
+        type: "input",
         name: "employeeDelete",
         message: "enter the ID of the employee you would like to Delete :",
         validate: (input) => {
@@ -232,16 +232,17 @@ function removeEmployee() {
                 console.log("Employee ID must be a number");
             }
         }
-    }]).then(function(userInput) {
+    }]).then(function(input) {
+        const query = "DELETE FROM employee WHERE id = ";
+        const userInput = input.employeeDelete;
         connection.query(
-            "REMOVE FROM employee WHERE id = ?", {
-                id: userInput
-            },
+            query + userInput,
             function(err, userInput) {
                 if (err) {
                     throw err;
                 }
-                console.log(`Deleting Employee ID: ${userInput}`)
+                console.log(`Deleting Employee ID: ${userInput.employeeDelete}`);
+                viewAllEmployees();
             })
     })
 };
