@@ -218,7 +218,6 @@ function addEmployee() {
 }
 
 
-
 function removeEmployee() {
     inquirer.prompt([{
         type: "input",
@@ -230,6 +229,7 @@ function removeEmployee() {
                 return true;
             } else {
                 console.log("Employee ID must be a number");
+                // input type validation not fully implemented
             }
         }
     }]).then(function(input) {
@@ -246,6 +246,52 @@ function removeEmployee() {
             })
     })
 };
+
+
+
+function updateEmployeeRole() {
+    inquirer
+        .prompt([{
+                type: "input",
+                name: "editEmployee",
+                message: "enter employee ID to change their role:",
+                validate: (input) => {
+                    if (input) {
+
+                        return true;
+                    } else {
+                        console.log("Employee ID must be a number");
+                        // input type validation not fully implemented
+                    }
+                }
+            },
+            {
+                type: "input",
+                name: "newEmployeeRole",
+                message: "enter new role ID for employee:",
+                validate: (input) => {
+                    if (input) {
+
+                        return true;
+                    } else {
+                        console.log("Employee ID must be a number");
+                        // input type validation not fully implemented
+                    }
+                }
+            }
+        ]).then(function(input) {
+
+
+            connection.query("UPDATE employee SET role_id = ? WHERE id = ?", [input.newEmployeeRole, input.editEmployee], (err, res) => {
+                if (err) {
+                    throw err;
+                }
+                console.log(`Updating Employee ID: ${input.editEmployee} role to Role ID ${input.newEmployeeRole}`);
+                viewAllEmployees();
+            })
+        })
+
+}
 
 
 
