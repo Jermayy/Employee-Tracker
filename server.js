@@ -75,7 +75,7 @@ function init() {
 function viewAllEmployees() {
 
     const query =
-        `SELECT employee.first_name AS First_Name, employee.last_name AS Last_Name, role.title AS Role_Title, role.salary AS Salary, department.name AS Department_Name FROM((role INNER JOIN employee ON role.id = employee.role_id) INNER JOIN department ON role.dep_id = department.id`;
+        "SELECT employee.first_name AS First_Name, employee.last_name AS Last_Name, role.title AS Role_Title, role.salary AS Salary, department.name AS Department_Name FROM((role INNER JOIN employee ON role.id = employee.role_id)INNER JOIN department ON role.dep_id = department.id);";
 
     console.log(query);
 
