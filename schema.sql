@@ -32,5 +32,7 @@ FOREIGN KEY (dep_id) REFERENCES department(id)
 ALTER TABLE employee
 ADD FOREIGN KEY (role_id) REFERENCES role(id);
 
+ALTER TABLE employee
+ADD FOREIGN KEY (manager_id) REFERENCES employee(id);
 
 SELECT * FROM department;
