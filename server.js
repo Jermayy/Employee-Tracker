@@ -1,5 +1,6 @@
 const mysql = require("mysql");
 const inquirer = require("inquirer");
+const cTable = require("console.table");
 
 const connection = mysql.createConnection({
     host: "localhost",
@@ -11,7 +12,7 @@ const connection = mysql.createConnection({
     user: "root",
 
     // Your password
-    password: "",
+    password: "Jeremyrawrr7",
     database: "employee_DB"
 });
 
@@ -36,5 +37,55 @@ function init() {
                 "Update Employee Role",
                 "Update Employee Manager"
             ]
+        }).then(function(answer) {
+            switch (answer.initChoice) {
+                case "View All Employees":
+                    viewAllEmployees();
+                    break;
+
+                case "View All Employees By Deparment":
+                    viewAllEmployeesByDep();
+                    break;
+
+                    // case "View All Employees By Manager":
+                    //     viewAllEmployeesByManager();
+                    //     break;
+
+                case "Add Employee":
+                    addEmployee();
+                    break;
+
+                case "Remove Employee":
+                    removeEmployee();
+                    break;
+
+                case "Update Employee Role":
+                    updateEmployeeRole();
+                    break;
+
+                    // case "Update Employee Manager":
+                    //     updateEmployeeManager();
+                    //     break;
+
+            }
         })
 };
+
+
+function viewAllEmployees() {
+
+    const query =
+        `SELECT employee.first_name AS First_Name, employee.last_name AS Last_Name, role.title AS Role_Title, role.salary AS Salary, department.name AS Department_Name FROM((role INNER JOIN employee ON role.id = employee.role_id) INNER JOIN department ON role.dep_id = department.id`;
+
+    console.log(query);
+
+    connection.query(query, function(err, res) {
+
+        if (err) throw err;
+
+        console.log("Viewing all Employee's on the Database");
+        console.table(res);
+    })
+}
+
+// -- Displays Employee's first name, last name, Role Title, salary and department --> must show manager name if applicable (bonus)
