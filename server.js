@@ -14,7 +14,7 @@ const connection = mysql.createConnection({
     user: "root",
 
     // Your password
-    password: "Jeremyrawrr7",
+    password: "",
     database: "employee_DB"
 });
 
@@ -38,7 +38,11 @@ function init() {
                 "View All Roles",
                 // "View All Employees By Manager",
                 "Add Employee",
+                "Add Department",
+                "Add Role",
                 "Remove Employee",
+                "Remove Department",
+                "Remove Role",
                 "Update Employee Role",
                 // "Update Employee Manager"
             ]
@@ -63,8 +67,20 @@ function init() {
                 case "Add Employee":
                     addEmployee();
                     break;
+                case "Add Department":
+                    addDepartment();
+                    break;
+                case "Add Role":
+                    addRole();
+                    break;
 
                 case "Remove Employee":
+                    removeEmployee();
+                    break;
+                case "Remove Department":
+                    removeEmployee();
+                    break;
+                case "Remove Role":
                     removeEmployee();
                     break;
 
@@ -84,7 +100,7 @@ function init() {
 function viewAllEmployees() {
 
     const query =
-        "SELECT employee.first_name AS First_Name, employee.last_name AS Last_Name, role.title AS Role_Title, role.salary AS Salary, department.name AS Department_Name FROM((role INNER JOIN employee ON role.id = employee.role_id)INNER JOIN department ON role.dep_id = department.id);";
+        "SELECT employee.id AS ID, employee.first_name AS First_Name, employee.last_name AS Last_Name, role.title AS Role_Title, role.salary AS Salary, department.name AS Department_Name FROM((role INNER JOIN employee ON role.id = employee.role_id)INNER JOIN department ON role.dep_id = department.id);";
 
     console.log(query);
 
@@ -110,7 +126,7 @@ function viewAllEmployees() {
 function viewAllDep() {
 
     const query =
-        "SELECT * FROM department;";
+        "SELECT * FROM department ORDER BY id;";
 
     console.log(query);
 
@@ -130,7 +146,7 @@ function viewAllDep() {
 function viewAllRoles() {
 
     const query =
-        "SELECT * FROM role;";
+        "SELECT * FROM role ORDER BY dep_id;";
 
     console.log(query);
 
@@ -218,10 +234,110 @@ function addEmployee() {
 }
 
 
+function addDepartment() {
+    inquirer
+        .prompt([{
+            name: "newDepartment",
+            type: "input",
+            message: "Enter name of new Department:",
+            validate: (input) => {
+                if (input) {
+                    return true;
+                } else {
+                    console.log("Please enter new department name:");
+                }
+            }
+        }]).then(function(userInput) {
+            connection.query(
+                "INSERT INTO department SET ?", {
+                    name: userInput.newDepartment,
+                },
+                function(err, userInput) {
+                    if (err) {
+                        throw err;
+                    }
+                    console.log(`Added new Department: ${userInput.newDepartment}`);
+                    viewAllDep();
+                }
+            );
+
+            init();
+
+        });
+}
+
+function addRole() {
+    inquirer
+        .prompt([{
+                name: "newRoleTitle",
+                type: "input",
+                message: "Enter name of new Role:",
+                validate: (input) => {
+                    if (input) {
+                        return true;
+                    } else {
+                        console.log("Please enter new role name:");
+                    }
+                }
+            },
+            {
+                name: "salary",
+                type: "input",
+                message: "Enter Salary of new role (Integers only eg. 100000)",
+                validate: (input) => {
+                    if (input) {
+                        return true;
+                    } else {
+                        console.log("Please enter salary");
+                    }
+                }
+            },
+            {
+                name: "roleDepID",
+                type: "input",
+                message: "Enter id of department new role falls under:",
+                validate: (input) => {
+                    if (input) {
+                        return true;
+                    } else {
+                        console.log("Please enter id of department new role falls under:");
+                    }
+                }
+            }
+        ]).then(function(userInput) {
+            connection.query(
+                "INSERT INTO role SET ?", {
+                    title: userInput.newRoleTitle,
+                    salary: userInput.salary,
+                    dep_id: userInput.roleDepID,
+
+                },
+                function(err, userInput) {
+                    if (err) {
+                        throw err;
+                    }
+                    console.log(`Added new Role: ${userInput.newRoleTitle}`);
+                    viewAllRoles();
+                }
+            );
+
+            init();
+
+        });
+}
+
+
+
+
+
+
+
+
+
 function removeEmployee() {
     inquirer.prompt([{
-        type: "input",
         name: "employeeDelete",
+        type: "input",
         message: "enter the ID of the employee you would like to Delete :",
         validate: (input) => {
             if (input) {
@@ -252,8 +368,8 @@ function removeEmployee() {
 function updateEmployeeRole() {
     inquirer
         .prompt([{
-                type: "input",
                 name: "editEmployee",
+                type: "input",
                 message: "enter employee ID to change their role:",
                 validate: (input) => {
                     if (input) {
@@ -266,8 +382,8 @@ function updateEmployeeRole() {
                 }
             },
             {
-                type: "input",
                 name: "newEmployeeRole",
+                type: "input",
                 message: "enter new role ID for employee:",
                 validate: (input) => {
                     if (input) {
