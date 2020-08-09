@@ -1,6 +1,8 @@
 const mysql = require("mysql");
 const inquirer = require("inquirer");
 const cTable = require("console.table");
+const { async } = require("rxjs");
+const { connect } = require("http2");
 
 const connection = mysql.createConnection({
     host: "localhost",
@@ -22,6 +24,8 @@ connection.connect(function(err) {
 });
 
 
+
+
 function init() {
     inquirer
         .prompt({
@@ -30,7 +34,8 @@ function init() {
             message: "What would you like to do?",
             choices: [
                 "View All Employees",
-                "View All Employees By Deparment",
+                "View All Deparments",
+                "View All Roles",
                 // "View All Employees By Manager",
                 "Add Employee",
                 "Remove Employee",
@@ -43,8 +48,12 @@ function init() {
                     viewAllEmployees();
                     break;
 
-                case "View All Employees By Deparment":
-                    viewAllEmployeesByDep();
+                case "View All Deparments":
+                    viewAllDep();
+                    break;
+
+                case "View All Roles":
+                    viewAllRoles();
                     break;
 
                     // case "View All Employees By Manager":
@@ -98,10 +107,10 @@ function viewAllEmployees() {
 
 
 
-function viewAllEmployeesByDep() {
+function viewAllDep() {
 
     const query =
-        "SELECT department.name AS Department_Name, employee.first_name AS First_Name, employee.last_name AS Last_Name, role.title AS Role_Title, role.salary AS Salary FROM((role INNER JOIN employee ON role.id = employee.role_id)INNER JOIN department ON role.dep_id = department.id) ORDER BY Department_Name;";
+        "SELECT * FROM department;";
 
     console.log(query);
 
@@ -109,7 +118,7 @@ function viewAllEmployeesByDep() {
 
         if (err) throw err;
 
-        console.log("Viewing all Employees on the Database");
+        console.log("Viewing all departments on the Database");
         console.table(res);
 
         init();
@@ -117,3 +126,147 @@ function viewAllEmployeesByDep() {
 
     })
 }
+
+function viewAllRoles() {
+
+    const query =
+        "SELECT * FROM role;";
+
+    console.log(query);
+
+    connection.query(query, function(err, res) {
+
+        if (err) throw err;
+
+        console.log("Viewing all roles on the Database");
+        console.table(res);
+
+        init();
+
+
+    })
+}
+
+
+
+
+
+
+function addEmployee() {
+    inquirer
+        .prompt([{
+                name: "newEmployeeFirst",
+                type: "input",
+                message: "Enter new employee first name:",
+                validate: (input) => {
+                    if (input) {
+                        return true;
+                    } else {
+                        console.log("Please enter new employee's first name:");
+                    }
+                }
+            },
+            {
+                name: "newEmployeeLast",
+                type: "input",
+                message: "Enter new employee last name:",
+                validate: (input) => {
+                    if (input) {
+                        return true;
+
+
+                    } else {
+                        console.log("Please enter new employee's last name:");
+
+                    }
+                }
+            },
+            {
+                name: "newEmployeeRole",
+                type: "input",
+                message: "Enter Employee Role ID",
+                validate: (input) => {
+                    if (input) {
+                        return true;
+                    } else {
+                        console.log("Please enter new employee's role id:");
+
+                    }
+                }
+
+
+            }
+        ]).then(function(userInput) {
+            connection.query(
+                "INSERT INTO employee SET ?", {
+                    first_name: userInput.newEmployeeFirst,
+                    last_name: userInput.newEmployeeLast,
+                    role_id: userInput.newEmployeeRole,
+                    manager_id: null
+                },
+                function(err, userInput) {
+                    if (err) {
+                        throw err;
+                    }
+                    console.table(userInput);
+                }
+            );
+
+            init();
+
+        });
+}
+
+
+
+function removeEmployee() {
+    inquirer.prompt([{
+        type: "number",
+        name: "employeeDelete",
+        message: "enter the ID of the employee you would like to Delete :",
+        validate: (input) => {
+            if (input) {
+
+                return true;
+            } else {
+                console.log("Employee ID must be a number");
+            }
+        }
+    }]).then(function(userInput) {
+        connection.query(
+            "REMOVE FROM employee WHERE id = ?", {
+                id: userInput
+            },
+            function(err, userInput) {
+                if (err) {
+                    throw err;
+                }
+                console.log(`Deleting Employee ID: ${userInput}`)
+            })
+    })
+};
+
+
+
+
+
+
+
+
+// ------------------------------ Retrieve Existing Information from Database --------------------------------
+// async function getRoles() {
+//     let query = "SELECT title FROM role";
+//     const rows = await connection.query(query, function(err, res) {
+//         if (err) throw err;
+
+//         let roles = [];
+//         for (const row of res) {
+//             roles.push(row.title);
+//         }
+
+//         return roles;
+
+//     });
+
+
+// }
