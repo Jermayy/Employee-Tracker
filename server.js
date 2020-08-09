@@ -78,10 +78,10 @@ function init() {
                     removeEmployee();
                     break;
                 case "Remove Department":
-                    removeEmployee();
+                    removeDepartment();
                     break;
                 case "Remove Role":
-                    removeEmployee();
+                    removeRole();
                     break;
 
                 case "Update Employee Role":
@@ -331,7 +331,7 @@ function addRole() {
 
 
 
-
+// ------Remove Items --------
 
 
 function removeEmployee() {
@@ -362,6 +362,72 @@ function removeEmployee() {
             })
     })
 };
+
+
+function removeDepartment() {
+    inquirer.prompt([{
+        name: "departmentDelete",
+        type: "input",
+        message: "enter the ID of the department you would like to Delete :",
+        validate: (input) => {
+            if (input) {
+
+                return true;
+            } else {
+                console.log("Department ID must be a number");
+                // input type validation not fully implemented
+            }
+        }
+    }]).then(function(input) {
+        const query = "DELETE FROM department WHERE id = ";
+        const userInput = input.departmentDelete;
+        connection.query(
+            query + userInput,
+            function(err, userInput) {
+                if (err) {
+                    throw err;
+                }
+                console.log(`Deleting Employee ID: ${userInput.departmentDelete}`);
+                viewAllDep();
+            })
+    })
+};
+
+
+function removeRole() {
+    inquirer.prompt([{
+        name: "roleDelete",
+        type: "input",
+        message: "enter the ID of the role you would like to Delete :",
+        validate: (input) => {
+            if (input) {
+
+                return true;
+            } else {
+                console.log("role ID must be a number");
+                // input type validation not fully implemented
+            }
+        }
+    }]).then(function(input) {
+        const query = "DELETE FROM role WHERE id = ";
+        const userInput = input.roleDelete;
+        connection.query(
+            query + userInput,
+            function(err, userInput) {
+                if (err) {
+                    throw err;
+                }
+                console.log(`Deleting Employee ID: ${userInput.roleDelete}`);
+                viewAllRoles();
+            })
+    })
+};
+
+
+
+// ----- Update Items -----
+
+
 
 
 
