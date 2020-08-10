@@ -23,7 +23,6 @@ INSERT INTO role (title,salary,dep_id) VALUES ('Intermediate Accountant', 80000,
 
 
 -- Employees:
-
 INSERT INTO employee (first_name,last_name,role_id,manager_id) VALUES ('Nichola','Bonham',1, null);
 INSERT INTO employee (first_name,last_name,role_id,manager_id) VALUES ('Ben','James',2, Null);
 
@@ -38,18 +37,14 @@ INSERT INTO employee (first_name,last_name,role_id,manager_id) VALUES ('James','
 INSERT INTO employee (first_name,last_name,role_id,manager_id) VALUES ('Phoebe','Siu',8, Null);
 INSERT INTO employee (first_name,last_name,role_id,manager_id) VALUES ('Chun','Loo',9, Null);
 
-UPDATE employee SET manager_id = 1 WHERE id = 2;
 
+-- Set manager IDs:
+UPDATE employee SET manager_id = 1 WHERE id = 2;
 UPDATE employee SET manager_id = 3 WHERE id = 4;
 UPDATE employee SET manager_id = 3 WHERE id = 5;
-
 UPDATE employee SET manager_id = 6 WHERE id = 7;
 UPDATE employee SET manager_id = 6 WHERE id = 8;
-
-UPDATE employee SET manager_id = 8 WHERE id = 10;
-
-
-
+UPDATE employee SET manager_id = 9 WHERE id = 10;
 
 
 
