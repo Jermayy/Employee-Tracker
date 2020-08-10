@@ -1,8 +1,6 @@
 const mysql = require("mysql");
 const inquirer = require("inquirer");
 const cTable = require("console.table");
-const { async } = require("rxjs");
-const { connect } = require("http2");
 
 const connection = mysql.createConnection({
     host: "localhost",
@@ -22,8 +20,6 @@ connection.connect(function(err) {
     if (err) throw err;
     init();
 });
-
-
 
 
 function init() {
@@ -96,13 +92,12 @@ function init() {
         })
 };
 
+// -------------- View existing items on Database:
 
 function viewAllEmployees() {
 
     const query =
         "SELECT employee.id AS ID, employee.first_name AS First_Name, employee.last_name AS Last_Name, role.title AS Role_Title, role.salary AS Salary, department.name AS Department_Name FROM((role INNER JOIN employee ON role.id = employee.role_id)INNER JOIN department ON role.dep_id = department.id);";
-
-    console.log(query);
 
     connection.query(query, function(err, res) {
 
@@ -118,17 +113,10 @@ function viewAllEmployees() {
 }
 
 
-
-// -- Displays Employee's first name, last name, Role Title, salary and department --> must show manager name if applicable (bonus)
-
-
-
 function viewAllDep() {
 
     const query =
         "SELECT * FROM department ORDER BY id;";
-
-    console.log(query);
 
     connection.query(query, function(err, res) {
 
@@ -148,7 +136,7 @@ function viewAllRoles() {
     const query =
         "SELECT * FROM role ORDER BY dep_id;";
 
-    console.log(query);
+
 
     connection.query(query, function(err, res) {
 
@@ -158,14 +146,14 @@ function viewAllRoles() {
         console.table(res);
 
         init();
-
+        return;
 
     })
 }
 
 
 
-
+// -------------  Add Items to database:
 
 
 function addEmployee() {
@@ -224,8 +212,9 @@ function addEmployee() {
                     if (err) {
                         throw err;
                     }
-                    console.table(userInput);
+                    return;
                 }
+
             );
 
             init();
@@ -256,13 +245,9 @@ function addDepartment() {
                     if (err) {
                         throw err;
                     }
-                    console.log(`Added new Department: ${userInput.newDepartment}`);
                     viewAllDep();
                 }
             );
-
-            init();
-
         });
 }
 
@@ -310,19 +295,14 @@ function addRole() {
                     title: userInput.newRoleTitle,
                     salary: userInput.salary,
                     dep_id: userInput.roleDepID,
-
                 },
                 function(err, userInput) {
                     if (err) {
                         throw err;
                     }
-                    console.log(`Added new Role: ${userInput.newRoleTitle}`);
                     viewAllRoles();
                 }
             );
-
-            init();
-
         });
 }
 
@@ -357,8 +337,8 @@ function removeEmployee() {
                 if (err) {
                     throw err;
                 }
-                console.log(`Deleting Employee ID: ${userInput.employeeDelete}`);
                 viewAllEmployees();
+                return;
             })
     })
 };
@@ -387,8 +367,8 @@ function removeDepartment() {
                 if (err) {
                     throw err;
                 }
-                console.log(`Deleting Employee ID: ${userInput.departmentDelete}`);
                 viewAllDep();
+                return;
             })
     })
 };
@@ -417,8 +397,9 @@ function removeRole() {
                 if (err) {
                     throw err;
                 }
-                console.log(`Deleting Employee ID: ${userInput.roleDelete}`);
+
                 viewAllRoles();
+                return;
             })
     })
 };
@@ -468,8 +449,8 @@ function updateEmployeeRole() {
                 if (err) {
                     throw err;
                 }
-                console.log(`Updating Employee ID: ${input.editEmployee} role to Role ID ${input.newEmployeeRole}`);
                 viewAllEmployees();
+                return;
             })
         })
 
